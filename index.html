@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ц.Одбаяр - Програм хангамжийн инженерийн оюутан">
+    <title>Ц.Одбаяр | Програм хангамжийн инженерийн оюутан</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            pink: '#ff00ff',
+                            blue: '#00ffff',
+                            purple: '#9d00ff',
+                            green: '#00ff00',
+                            red: '#ff0033',
+                        }
+                    },
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        rajdhani: ['Rajdhani', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="styles.css">
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loader" class="fixed inset-0 z-[9999] bg-black flex items-center justify-center">
+        <div class="text-center">
+            <div class="loader-text text-6xl font-bold text-transparent bg-clip-text animate-pulse">LOADING...</div>
+            <div class="text-xs text-cyber-blue mt-4 tracking-widest">SYSTEM INITIALIZING</div>
+        </div>
+    </div>
+
+    <!-- Particle Background -->
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- ===================== ADMIN LOGIN MODAL ===================== -->
+    <div id="adminLoginOverlay" class="modal-overlay hidden">
+        <div class="modal-box w-[380px]">
+            <div class="modal-header">
+                <i class="fas fa-lock text-cyber-purple mr-2"></i>
+                <h3 class="font-orbitron">Admin Login</h3>
+            </div>
+            <div id="loginError" class="hidden text-sm text-red-400 mb-3 p-2 bg-red-900/20 rounded border border-red-500/30">
+                <i class="fas fa-exclamation-triangle mr-1"></i> Нэвтрэх нэр эсвэл нууц үг буруу байна
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="admin-label">Username</label>
+                    <input id="loginUsername" placeholder="admin" class="admin-input" onkeydown="if(event.key==='Enter') doLogin()">
+                </div>
+                <div>
+                    <label class="admin-label">Password</label>
+                    <input id="loginPassword" type="password" placeholder="••••••••" class="admin-input" onkeydown="if(event.key==='Enter') doLogin()">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeAdminLogin()" class="btn-cancel">Cancel</button>
+                <button onclick="doLogin()" class="btn-primary"><i class="fas fa-sign-in-alt mr-1"></i>Login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== ADMIN TOP BAR ===================== -->
+    <div id="adminBar" class="hidden fixed top-0 left-0 right-0 z-[60] admin-topbar">
+        <div class="flex items-center gap-2 px-4 py-2">
+            <span class="text-xs text-cyber-green font-orbitron mr-2">
+                <i class="fas fa-shield-alt mr-1"></i>ADMIN: <span id="adminBarName"></span>
+            </span>
+            <button onclick="openProfileModal()" class="admin-bar-btn blue">
+                <i class="fas fa-user-edit mr-1"></i>Profile
+            </button>
+            <button onclick="openSkillsModal()" class="admin-bar-btn purple">
+                <i class="fas fa-code mr-1"></i>Skills
+            </button>
+            <button onclick="openProjectsModal()" class="admin-bar-btn pink">
+                <i class="fas fa-folder-open mr-1"></i>Projects
+            </button>
+            <button onclick="openContactModal()" class="admin-bar-btn green">
+                <i class="fas fa-address-card mr-1"></i>Contact
+            </button>
+            <button onclick="openAdminManage()" class="admin-bar-btn yellow">
+                <i class="fas fa-users-cog mr-1"></i>Admins
+            </button>
+            <button onclick="logout()" class="admin-bar-btn red ml-auto">
+                <i class="fas fa-sign-out-alt mr-1"></i>Logout
+            </button>
+        </div>
+    </div>
+
+    <!-- ===================== PROFILE MODAL ===================== -->
+    <div id="profileModal" class="modal-overlay hidden">
+        <div class="modal-box w-[560px]">
+            <div class="modal-header">
+                <i class="fas fa-user-edit text-cyber-blue mr-2"></i>
+                <h3 class="font-orbitron">Edit Profile</h3>
+            </div>
+            <div class="space-y-4">
+                <!-- Avatar upload -->
+                <div class="flex items-center gap-4 p-3 bg-black/30 rounded-lg border border-white/10">
+                    <img id="profileAvatarPreview" src="" alt="preview"
+                         class="w-20 h-20 rounded-full object-cover border-2 border-cyber-blue/50"
+                         onerror="this.src='https://placehold.co/80x80/0a0a0a/00ffff?text=OD'">
+                    <div class="flex-1">
+                        <label class="admin-label">Profile Photo</label>
+                        <input id="pAvatarFile" type="file" accept="image/*"
+                               onchange="handleProfileImageChange(event)"
+                               class="w-full text-sm text-gray-300 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-cyber-purple/30 file:text-cyber-purple file:cursor-pointer">
+                        <p class="text-xs text-gray-500 mt-1">PNG, JPG, GIF - зургаа сонгоно уу</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="admin-label">Full Name</label>
+                        <input id="pName" placeholder="Нэр" class="admin-input">
+                    </div>
+                    <div>
+                        <label class="admin-label">University</label>
+                        <input id="pUni" placeholder="Их сургууль" class="admin-input">
+                    </div>
+                    <div>
+                        <label class="admin-label">Registry No</label>
+                        <input id="pReg" placeholder="Бүртгэлийн дугаар" class="admin-input">
+                    </div>
+                    <div>
+                        <label class="admin-label">Student Code</label>
+                        <input id="pCode" placeholder="Оюутны код" class="admin-input">
+                    </div>
+                    <div>
+                        <label class="admin-label">Email</label>
+                        <input id="pEmail" type="email" placeholder="email@example.com" class="admin-input">
+                    </div>
+                    <div>
+                        <label class="admin-label">Phone</label>
+                        <input id="pPhone" placeholder="Утасны дугаар" class="admin-input">
+                    </div>
+                </div>
+                <div>
+                    <label class="admin-label">Bio / About me</label>
+                    <textarea id="pBio" rows="3" placeholder="Өөрийн тухай товч мэдээлэл..." class="admin-input"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeProfileModal()" class="btn-cancel">Cancel</button>
+                <button onclick="saveProfile()" class="btn-primary"><i class="fas fa-save mr-1"></i>Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== SKILLS MODAL ===================== -->
+    <div id="skillsModal" class="modal-overlay hidden">
+        <div class="modal-box w-[600px]">
+            <div class="modal-header">
+                <i class="fas fa-code text-cyber-purple mr-2"></i>
+                <h3 class="font-orbitron">Edit Skills</h3>
+            </div>
+            <div class="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
+                <div class="flex gap-2 mb-2">
+                    <button onclick="setSkillTab('frontend')" id="tabFrontend" class="skill-tab active">Frontend</button>
+                    <button onclick="setSkillTab('tools')" id="tabTools" class="skill-tab">Tools</button>
+                </div>
+                <!-- Frontend Skills list -->
+                <div id="frontendSkillsList" class="space-y-2"></div>
+                <!-- Tools list -->
+                <div id="toolsSkillsList" class="space-y-2 hidden"></div>
+
+                <!-- Add new skill -->
+                <div class="p-3 bg-black/30 rounded-lg border border-white/10 mt-3">
+                    <p class="admin-label mb-2">Шинэ skill нэмэх</p>
+                    <div class="flex gap-2">
+                        <input id="newSkillName" placeholder="Skill нэр (жш: React)" class="admin-input flex-1">
+                        <input id="newSkillPercent" type="number" min="1" max="100" placeholder="%" class="admin-input w-20">
+                        <button onclick="addSkill()" class="btn-primary px-3"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeSkillsModal()" class="btn-cancel">Cancel</button>
+                <button onclick="saveSkills()" class="btn-primary"><i class="fas fa-save mr-1"></i>Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== PROJECTS MODAL ===================== -->
+    <div id="projectsModal" class="modal-overlay hidden">
+        <div class="modal-box w-[700px]">
+            <div class="modal-header">
+                <i class="fas fa-folder-open text-cyber-pink mr-2"></i>
+                <h3 class="font-orbitron">Edit Projects</h3>
+            </div>
+            <div class="max-h-[60vh] overflow-y-auto pr-1 space-y-3" id="projectsList"></div>
+            <!-- Add new project -->
+            <div class="p-3 bg-black/30 rounded-lg border border-white/10 mt-3">
+                <p class="admin-label mb-2">Шинэ project нэмэх</p>
+                <div class="grid grid-cols-2 gap-2">
+                    <input id="newProjTitle" placeholder="Project нэр" class="admin-input">
+                    <input id="newProjLink" placeholder="URL (https://...)" class="admin-input">
+                    <textarea id="newProjDesc" placeholder="Тайлбар" rows="2" class="admin-input col-span-2"></textarea>
+                    <input id="newProjTags" placeholder="Tags (HTML, CSS, JS - таслалаар)" class="admin-input col-span-2">
+                    <select id="newProjColor" class="admin-input">
+                        <option value="from-cyber-blue to-cyber-purple">Blue → Purple</option>
+                        <option value="from-cyber-purple to-cyber-pink">Purple → Pink</option>
+                        <option value="from-cyber-pink to-cyber-blue">Pink → Blue</option>
+                        <option value="from-cyber-green to-cyber-blue">Green → Blue</option>
+                        <option value="from-cyber-red to-cyber-purple">Red → Purple</option>
+                    </select>
+                    <select id="newProjIcon" class="admin-input">
+                        <option value="fas fa-code">💻 Code</option>
+                        <option value="fas fa-shopping-cart">🛒 Shopping Cart</option>
+                        <option value="fas fa-cloud-sun">☀️ Weather</option>
+                        <option value="fas fa-tasks">✅ Tasks</option>
+                        <option value="fas fa-film">🎬 Film</option>
+                        <option value="fas fa-calculator">🧮 Calculator</option>
+                        <option value="fas fa-gamepad">🎮 Game</option>
+                        <option value="fas fa-mobile-alt">📱 Mobile</option>
+                        <option value="fas fa-robot">🤖 AI/Robot</option>
+                        <option value="fas fa-database">🗄️ Database</option>
+                    </select>
+                </div>
+                <button onclick="addProject()" class="btn-primary mt-2 w-full"><i class="fas fa-plus mr-1"></i>Add Project</button>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeProjectsModal()" class="btn-cancel">Cancel</button>
+                <button onclick="saveProjects()" class="btn-primary"><i class="fas fa-save mr-1"></i>Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== CONTACT MODAL ===================== -->
+    <div id="contactModal" class="modal-overlay hidden">
+        <div class="modal-box w-[500px]">
+            <div class="modal-header">
+                <i class="fas fa-address-card text-cyber-green mr-2"></i>
+                <h3 class="font-orbitron">Edit Contact Info</h3>
+            </div>
+            <div class="space-y-3">
+                <div>
+                    <label class="admin-label"><i class="fas fa-envelope mr-1 text-cyber-blue"></i>Email</label>
+                    <input id="cEmail" placeholder="email@example.com" class="admin-input">
+                </div>
+                <div>
+                    <label class="admin-label"><i class="fab fa-github mr-1 text-cyber-purple"></i>GitHub URL</label>
+                    <input id="cGithub" placeholder="https://github.com/username" class="admin-input">
+                </div>
+                <div>
+                    <label class="admin-label"><i class="fab fa-github mr-1 text-cyber-purple"></i>GitHub Display Text</label>
+                    <input id="cGithubText" placeholder="github.com/username" class="admin-input">
+                </div>
+                <div>
+                    <label class="admin-label"><i class="fab fa-facebook mr-1 text-cyber-pink"></i>Facebook URL</label>
+                    <input id="cFacebook" placeholder="https://facebook.com/username" class="admin-input">
+                </div>
+                <div>
+                    <label class="admin-label"><i class="fab fa-facebook mr-1 text-cyber-pink"></i>Facebook Display Text</label>
+                    <input id="cFacebookText" placeholder="facebook.com/username" class="admin-input">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeContactModal()" class="btn-cancel">Cancel</button>
+                <button onclick="saveContact()" class="btn-primary"><i class="fas fa-save mr-1"></i>Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== ADMIN MANAGE MODAL ===================== -->
+    <div id="adminManageModal" class="modal-overlay hidden">
+        <div class="modal-box w-[520px]">
+            <div class="modal-header">
+                <i class="fas fa-users-cog text-yellow-400 mr-2"></i>
+                <h3 class="font-orbitron">Manage Admins</h3>
+            </div>
+            <div class="mb-4">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-gray-400 border-b border-white/10">
+                            <th class="text-left py-2">#</th>
+                            <th class="text-left py-2">Username</th>
+                            <th class="text-left py-2">Created</th>
+                            <th class="text-right py-2">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTableBody"></tbody>
+                </table>
+            </div>
+            <div class="p-3 bg-black/30 rounded-lg border border-white/10">
+                <p class="admin-label mb-2">Шинэ admin нэмэх</p>
+                <div class="grid grid-cols-2 gap-2">
+                    <input id="newAdminUser" placeholder="Username" class="admin-input">
+                    <input id="newAdminPass" type="password" placeholder="Password" class="admin-input">
+                </div>
+                <button onclick="addAdminFromModal()" class="btn-primary mt-2 w-full">
+                    <i class="fas fa-user-plus mr-1"></i>Add Admin
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button onclick="closeAdminManage()" class="btn-cancel">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== NAVIGATION ===================== -->
+    <nav class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <a href="#hero" class="text-2xl font-orbitron font-bold text-cyber-blue neon-text">
+                        <span class="text-cyber-pink"><</span>O<span class="text-cyber-purple">/></span>
+                    </a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="flex items-baseline space-x-8">
+                        <a href="#hero" class="nav-link text-gray-300 hover:text-cyber-blue transition-colors duration-300">Нүүр</a>
+                        <a href="#about" class="nav-link text-gray-300 hover:text-cyber-purple transition-colors duration-300">Миний талаар</a>
+                        <a href="#skills" class="nav-link text-gray-300 hover:text-cyber-pink transition-colors duration-300">Ур чадвар</a>
+                        <a href="#projects" class="nav-link text-gray-300 hover:text-cyber-blue transition-colors duration-300">Төслийн жагсаалт</a>
+                        <a href="#contact" class="nav-link text-gray-300 hover:text-cyber-green transition-colors duration-300">Холбоо барих</a>
+                        <button id="adminBtn" onclick="openAdminLogin()" class="ml-4 px-3 py-1 border border-cyber-purple text-cyber-purple hover:bg-cyber-purple hover:text-black transition-colors duration-200 font-orbitron text-sm">
+                            <i class="fas fa-lock mr-1"></i>Admin
+                        </button>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-white hover:text-cyber-blue transition-colors">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden glass-effect">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#hero" class="mobile-nav-link block px-3 py-2 text-gray-300 hover:text-cyber-blue transition-colors">Нүүр</a>
+                <a href="#about" class="mobile-nav-link block px-3 py-2 text-gray-300 hover:text-cyber-purple transition-colors">Миний талаар</a>
+                <a href="#skills" class="mobile-nav-link block px-3 py-2 text-gray-300 hover:text-cyber-pink transition-colors">Ур чадвар</a>
+                <a href="#projects" class="mobile-nav-link block px-3 py-2 text-gray-300 hover:text-cyber-blue transition-colors">Төслийн жагсаалт</a>
+                <a href="#contact" class="mobile-nav-link block px-3 py-2 text-gray-300 hover:text-cyber-green transition-colors">Холбоо барих</a>
+                <button onclick="openAdminLogin()" class="mobile-nav-link block px-3 py-2 text-cyber-purple">
+                    <i class="fas fa-lock mr-1"></i>Admin
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===================== HERO SECTION ===================== -->
+    <section id="hero" class="min-h-screen flex items-center justify-center relative overflow-hidden">
+        <div class="absolute inset-0 grid-bg"></div>
+        <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-cyber-pink rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-64 h-64 bg-cyber-blue rounded-full filter blur-3xl opacity-20 animate-pulse" style="animation-delay: 1s"></div>
+        <div class="absolute top-1/2 left-1/2 w-64 h-64 bg-cyber-purple rounded-full filter blur-3xl opacity-20 animate-pulse" style="animation-delay: 2s"></div>
+        
+        <div class="relative z-10 text-center px-4">
+            <div class="mb-6">
+                <span class="inline-block px-4 py-2 border border-cyber-blue text-cyber-blue text-sm mb-6 tracking-widest font-rajdhani hover:bg-cyber-blue hover:text-black transition-all duration-300">
+                    WELCOME TO MY DIGITAL REALM
+                </span>
+            </div>
+            <div class="flex items-center justify-center gap-6 flex-wrap">
+                <div>
+                    <img id="profileAvatar" src="" alt="avatar"
+                         class="w-40 h-40 rounded-full object-cover ring-4 ring-cyber-blue/30"
+                         onerror="this.src='https://placehold.co/160x160/0a0a0a/00ffff?text=OD'">
+                </div>
+                <h1 class="text-6xl md:text-8xl font-orbitron font-black mb-4 text-white">
+                    <span id="profileName" class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-blue via-cyber-purple to-cyber-pink animate-gradient">Ц.Одбаяр</span>
+                </h1>
+            </div>
+            <div class="mb-8">
+                <h2 class="text-2xl md:text-4xl font-rajdhani font-semibold text-gray-300">
+                    Програм хангамжийн инженерийн <span class="text-cyber-blue">оюутан</span>
+                </h2>
+            </div>
+            <div class="max-w-2xl mx-auto mb-12">
+                <p class="text-lg md:text-xl text-gray-400 font-rajdhani leading-relaxed" id="heroBio">
+                     <span class="text-cyber-pink coding-text">Код бичих, технологи судлах, орчин үеийн вэб апп хөгжүүлэхдээ дуртай.</span><span class="text-cyber-purple technology-text"></span>
+                     <span class="text-cyber-blue web-text"></span>
+                </p>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#projects" class="group relative px-8 py-4 bg-transparent border-2 border-cyber-blue text-cyber-blue font-orbitron font-bold rounded-none hover:bg-cyber-blue hover:text-black transition-all duration-300 overflow-hidden">
+                    <span class="relative z-10">Миний төслүүд</span>
+                </a>
+                <a href="#contact" class="group relative px-8 py-4 bg-transparent border-2 border-cyber-pink text-cyber-pink font-orbitron font-bold rounded-none hover:bg-cyber-pink hover:text-black transition-all duration-300 overflow-hidden">
+                    <span class="relative z-10">Надтай холбогдох</span>
+                </a>
+            </div>
+            <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+                <a href="#about" class="text-cyber-blue animate-bounce block">
+                    <i class="fas fa-chevron-down text-2xl"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== ABOUT SECTION ===================== -->
+    <section id="about" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-orbitron font-bold text-white mb-4">
+                    Миний <span class="text-cyber-purple">тухай</span>
+                </h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-cyber-blue to-cyber-purple mx-auto"></div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="glass-effect p-8 rounded-lg relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-gradient-to-br from-cyber-purple/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div class="relative z-10">
+                        <h3 class="text-2xl font-orbitron font-bold text-cyber-blue mb-6">Миний тухай</h3>
+                        <p class="text-gray-300 font-rajdhani text-lg leading-relaxed mb-6">
+                            I'm a passionate <span class="text-cyber-pink">Software Engineering</span> student at 
+                            <span id="profileUni" class="text-cyber-purple">Ikh Zasag International University</span>. 
+                            I love exploring new technologies and building innovative solutions.
+                        </p>
+                        <p id="aboutBioText" class="text-gray-300 font-rajdhani text-lg leading-relaxed">
+                            My goal is to become a <span class="text-cyber-blue">professional software developer</span> 
+                            and create impactful applications that make a difference.
+                        </p>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div class="glass-effect p-6 rounded-lg transform hover:scale-105 transition-all duration-300">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 border-2 border-cyber-blue rounded-full flex items-center justify-center">
+                                <i class="fas fa-graduation-cap text-cyber-blue text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-orbitron font-semibold">Боловсрол</h4>
+                                <p id="eduName" class="text-gray-400 font-rajdhani">Их Засаг Олон Улсын Их Сургууль</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-effect p-6 rounded-lg transform hover:scale-105 transition-all duration-300">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 border-2 border-cyber-pink rounded-full flex items-center justify-center">
+                                <i class="fas fa-id-card text-cyber-pink text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-orbitron font-semibold">Оюутны мэдээлэл</h4>
+                                <p class="text-gray-400 font-rajdhani">
+                                    Reg: <span id="aboutReg" class="text-cyber-pink">ВК05310111</span> &nbsp;|&nbsp;
+                                    Code: <span id="aboutCode" class="text-cyber-blue">ЕУ23В075</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-effect p-6 rounded-lg transform hover:scale-105 transition-all duration-300">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 border-2 border-cyber-purple rounded-full flex items-center justify-center">
+                                <i class="fas fa-heart text-cyber-purple text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-orbitron font-semibold">Хүсэл тэмүүлэл</h4>
+                                <p class="text-gray-400 font-rajdhani">Програмчлалын хэл, системийн хөгжүүлэлт болон орчин үеийн технологийн дэвшлийг судлах, ашиглах</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== SKILLS SECTION ===================== -->
+    <section id="skills" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-orbitron font-bold text-white mb-4">
+                     <span class="text-cyber-pink">Ур чадвар</span>
+                </h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-cyber-pink to-cyber-blue mx-auto"></div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-12">
+                <!-- Frontend Skills -->
+                <div class="glass-effect p-8 rounded-lg">
+                    <h3 class="text-2xl font-orbitron font-bold text-cyber-blue mb-6">
+                        <i class="fas fa-code mr-2"></i>Frontend
+                    </h3>
+                    <div id="frontendSkillsDisplay" class="space-y-6"></div>
+                </div>
+                <!-- Tools -->
+                <div class="glass-effect p-8 rounded-lg">
+                    <h3 class="text-2xl font-orbitron font-bold text-cyber-pink mb-6">
+                        <i class="fas fa-tools mr-2"></i>Tools
+                    </h3>
+                    <div id="toolsSkillsDisplay" class="grid grid-cols-2 gap-3"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== PROJECTS SECTION ===================== -->
+    <section id="projects" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-orbitron font-bold text-white mb-4">
+                    <span class="text-cyber-blue">ТӨСЛҮҮД</span>
+                </h2>
+                <div class="w-24 h-1 bg-gradient-to-r from-cyber-purple to-cyber-pink mx-auto"></div>
+            </div>
+            <div id="projectsDisplay" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        </div>
+    </section>
+
+    <!-- ===================== CONTACT SECTION ===================== -->
+    <section id="contact" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-orbitron font-bold text-white mb-4 readable-text">
+                    Надтай <span class="text-cyber-green">Холбогдох</span>
+                </h2>
+                <div class="w-24 h-1 mx-auto title-underline"></div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto">
+                <div class="space-y-6">
+                    <div class="contact-card p-8 rounded-xl">
+                        <div class="flex items-center space-x-6">
+                            <div class="contact-icon rounded-full flex items-center justify-center" style="color: var(--cyber-blue)">
+                                <i class="fas fa-envelope text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-orbitron font-semibold text-lg readable-text">Email</h4>
+                                <a id="contactEmailLink" href="mailto:" class="text-gray-300 font-rajdhani text-lg hover:text-cyber-blue transition-colors social-icon readable-text">odbayar@ikhzasag.edu.mn</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="contact-card p-8 rounded-xl">
+                        <div class="flex items-center space-x-6">
+                            <div class="contact-icon rounded-full flex items-center justify-center" style="color: var(--cyber-purple)">
+                                <i class="fab fa-github text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-orbitron font-semibold text-lg readable-text">GitHub</h4>
+                                <a id="contactGithubLink" href="#" target="_blank" class="text-gray-300 font-rajdhani text-lg hover:text-cyber-purple transition-colors social-icon readable-text">github.com/odbayar</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="contact-card p-8 rounded-xl">
+                        <div class="flex items-center space-x-6">
+                            <div class="contact-icon rounded-full flex items-center justify-center" style="color: var(--cyber-pink)">
+                                <i class="fab fa-facebook text-2xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-orbitron font-semibold text-lg readable-text">Facebook</h4>
+                                <a id="contactFacebookLink" href="#" target="_blank" class="text-gray-300 font-rajdhani text-lg hover:text-cyber-pink transition-colors social-icon readable-text">facebook.com/odbayar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-form-container p-10 rounded-xl">
+                    <form id="contact-form" class="space-y-6">
+                        <div>
+                            <label class="form-label">YOUR NAME</label>
+                            <input type="text" name="name" class="w-full px-5 py-4 bg-black/60 border-2 border-gray-700 rounded-lg text-white focus:border-cyber-blue focus:outline-none transition-all font-rajdhani text-lg readable-text" placeholder="John Doe" required>
+                        </div>
+                        <div>
+                            <label class="form-label">YOUR EMAIL</label>
+                            <input type="email" name="email" class="w-full px-5 py-4 bg-black/60 border-2 border-gray-700 rounded-lg text-white focus:border-cyber-blue focus:outline-none transition-all font-rajdhani text-lg readable-text" placeholder="john@example.com" required>
+                        </div>
+                        <div>
+                            <label class="form-label">YOUR MESSAGE</label>
+                            <textarea name="message" rows="5" class="w-full px-5 py-4 bg-black/60 border-2 border-gray-700 rounded-lg text-white focus:border-cyber-blue focus:outline-none transition-all font-rajdhani text-lg resize-none readable-text" placeholder="Your message..." required></textarea>
+                        </div>
+                        <button type="submit" class="submit-button w-full">
+                            <i class="fas fa-paper-plane mr-2"></i>SEND MESSAGE
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="py-8 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <p class="text-gray-400 font-rajdhani">
+                    © 2024 <span class="text-cyber-blue" id="footer-name">Odbayar</span>. All Rights Reserved. Built with <span class="text-cyber-pink">♥</span> and Cyberpunk vibes.
+                </p>
+                <div class="mt-4">
+                    <button onclick="openAdminLogin()" class="text-cyber-purple font-rajdhani text-sm hover:text-cyber-blue transition-colors opacity-50 hover:opacity-100">
+                        <i class="fas fa-lock mr-2"></i>Admin Panel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
