@@ -18,13 +18,13 @@ let currentSkillTab = 'frontend';
 function seedDefaults() {
     if (!localStorage.getItem(STORAGE_PROFILE)) {
         localStorage.setItem(STORAGE_PROFILE, JSON.stringify({
-            name:   'Ц.Одбаяр',
-            uni:    'Их Засаг Олон Улсын Их Сургууль',
+            name:   'ODBAYAR',
+            uni:    'Ikh Zasag International University',
             reg:    'ВК05310111',
             code:   'ЕУ23В075',
             email:  'odbayar@ikhzasag.edu.mn',
-            phone:  '99296126',
-            bio:    Програм хангамжийн инженерийн оюутан. Вэб аппликейшн хөгжүүлдэг бөгөөд шинэ технологи сурах дуртай',
+            phone:  '70157768',
+            bio:    'Software Engineering student. I build web apps and enjoy learning new tech.',
             avatar: ''
         }));
     }
@@ -64,7 +64,7 @@ function seedDefaults() {
             github:       'https://github.com/odbayar',
             githubText:   'github.com/odbayar',
             facebook:     'https://facebook.com/odbayar',
-            facebookText: 'facebook.com/Odko'
+            facebookText: 'facebook.com/odbayar'
         }));
     }
 }
@@ -86,10 +86,10 @@ function renderProfile() {
     const p = loadProfile();
     const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val || ''; };
 
-    set('profileName',  p.name  || 'Ц.Одбаяр');
-    set('profileUni',   p.uni   || 'Их Засаг Олон Улсын Их Сургууль');
-    set('eduName',      p.uni   || 'Их Засаг Олон Улсын Их Сургууль');
-    set('footer-name',  p.name  || 'Ц.Одбаяр');
+    set('profileName',  p.name  || 'ODBAYAR');
+    set('profileUni',   p.uni   || 'Ikh Zasag International University');
+    set('eduName',      p.uni   || 'Ikh Zasag International University');
+    set('footer-name',  p.name  || 'Odbayar');
     set('aboutReg',     p.reg   || '');
     set('aboutCode',    p.code  || '');
 
