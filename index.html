@@ -44,8 +44,8 @@
     <!-- Loading Screen -->
     <div id="loader" class="fixed inset-0 z-[9999] bg-black flex items-center justify-center">
         <div class="text-center">
-            <div class="loader-text text-6xl font-bold text-transparent bg-clip-text animate-pulse">LOADING...</div>
-            <div class="text-xs text-cyber-blue mt-4 tracking-widest">SYSTEM INITIALIZING</div>
+            <div class="loader-text text-6xl font-bold text-transparent bg-clip-text animate-pulse">Ачаалж байна...</div>
+            <div class="text-xs text-cyber-blue mt-4 tracking-widest">“Систем эхлэж байна</div>
         </div>
     </div>
 
@@ -57,18 +57,18 @@
         <div class="modal-box w-[380px]">
             <div class="modal-header">
                 <i class="fas fa-lock text-cyber-purple mr-2"></i>
-                <h3 class="font-orbitron">Admin Login</h3>
+                <h3 class="font-orbitron">Админ нэвтрэх</h3>
             </div>
             <div id="loginError" class="hidden text-sm text-red-400 mb-3 p-2 bg-red-900/20 rounded border border-red-500/30">
                 <i class="fas fa-exclamation-triangle mr-1"></i> Нэвтрэх нэр эсвэл нууц үг буруу байна
             </div>
             <div class="space-y-3">
                 <div>
-                    <label class="admin-label">Username</label>
+                    <label class="admin-label">“Хэрэглэгчийн нэр</label>
                     <input id="loginUsername" placeholder="admin" class="admin-input" onkeydown="if(event.key==='Enter') doLogin()">
                 </div>
                 <div>
-                    <label class="admin-label">Password</label>
+                    <label class="admin-label">Нууц үг</label>
                     <input id="loginPassword" type="password" placeholder="••••••••" class="admin-input" onkeydown="if(event.key==='Enter') doLogin()">
                 </div>
             </div>
@@ -86,22 +86,22 @@
                 <i class="fas fa-shield-alt mr-1"></i>ADMIN: <span id="adminBarName"></span>
             </span>
             <button onclick="openProfileModal()" class="admin-bar-btn blue">
-                <i class="fas fa-user-edit mr-1"></i>Profile
+                <i class="fas fa-user-edit mr-1"></i>Профайл
             </button>
             <button onclick="openSkillsModal()" class="admin-bar-btn purple">
-                <i class="fas fa-code mr-1"></i>Skills
+                <i class="fas fa-code mr-1"></i>Ур чадварууд
             </button>
             <button onclick="openProjectsModal()" class="admin-bar-btn pink">
-                <i class="fas fa-folder-open mr-1"></i>Projects
+                <i class="fas fa-folder-open mr-1"></i>Төслүүд
             </button>
             <button onclick="openContactModal()" class="admin-bar-btn green">
-                <i class="fas fa-address-card mr-1"></i>Contact
+                <i class="fas fa-address-card mr-1"></i>Холбоо барих
             </button>
             <button onclick="openAdminManage()" class="admin-bar-btn yellow">
-                <i class="fas fa-users-cog mr-1"></i>Admins
+                <i class="fas fa-users-cog mr-1"></i>Админууд
             </button>
             <button onclick="logout()" class="admin-bar-btn red ml-auto">
-                <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                <i class="fas fa-sign-out-alt mr-1"></i>Гарах
             </button>
         </div>
     </div>
@@ -111,7 +111,7 @@
         <div class="modal-box w-[560px]">
             <div class="modal-header">
                 <i class="fas fa-user-edit text-cyber-blue mr-2"></i>
-                <h3 class="font-orbitron">Edit Profile</h3>
+                <h3 class="font-orbitron">Профайл засах</h3>
             </div>
             <div class="space-y-4">
                 <!-- Avatar upload -->
@@ -454,7 +454,7 @@
                             <div>
                                 <h4 class="text-white font-orbitron font-semibold">Оюутны мэдээлэл</h4>
                                 <p class="text-gray-400 font-rajdhani">
-                                    Reg: <span id="aboutReg" class="text-cyber-pink">ВК05310111</span> &nbsp;|&nbsp;
+                                    Reg: <span id="aboutReg" class="text-cyber-pink"></span> &nbsp;|&nbsp;
                                     Code: <span id="aboutCode" class="text-cyber-blue">ЕУ23В075</span>
                                 </p>
                             </div>
