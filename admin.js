@@ -50,12 +50,12 @@ function seedDefaults() {
     }
     if (!localStorage.getItem(STORAGE_PROJECTS)) {
         localStorage.setItem(STORAGE_PROJECTS, JSON.stringify([
-            { title: 'E-Commerce Website', desc: 'A modern e-commerce platform with shopping cart functionality.', link: '#', tags: ['HTML','CSS','JavaScript'], color: 'from-cyber-blue to-cyber-purple',   icon: 'fas fa-shopping-cart' },
-            { title: 'Weather App',        desc: 'Real-time weather application with location-based forecasts.',  link: '#', tags: ['HTML','JavaScript','API'],  color: 'from-cyber-purple to-cyber-pink',  icon: 'fas fa-cloud-sun'     },
-            { title: 'Task Manager',       desc: 'Productivity app for managing daily tasks and projects.',       link: '#', tags: ['HTML','CSS','JavaScript'], color: 'from-cyber-pink to-cyber-blue',    icon: 'fas fa-tasks'         },
-            { title: 'Movie Database',     desc: 'Search and explore movies with detailed information.',          link: '#', tags: ['HTML','API'],              color: 'from-cyber-green to-cyber-blue',   icon: 'fas fa-film'          },
-            { title: 'Calculator App',     desc: 'Beautiful calculator with advanced mathematical functions.',   link: '#', tags: ['HTML','CSS','JavaScript'], color: 'from-cyber-red to-cyber-purple',   icon: 'fas fa-calculator'    },
-            { title: 'Memory Game',        desc: 'Interactive memory matching game with animations.',            link: '#', tags: ['HTML','CSS','JavaScript'], color: 'from-cyber-blue to-cyber-pink',    icon: 'fas fa-gamepad'       }
+            { title: '“Цахим худалдааны вэбсайт', desc: 'Сагсны функцтэй орчин үеийн цахим худалдааны платформ.', link: '#', tags: ['HTML','CSS','JavaScript'], color: 'from-cyber-blue to-cyber-purple',   icon: 'fas fa-shopping-cart' },
+            { title: 'Цаг агаарын апп',        desc: 'Байршилд суурилсан урьдчилсан мэдээтэй, бодит цагийн цаг агаарын аппликейшн',  link: '#', tags: ['HTML','JavaScript','API'],  color: 'from-cyber-purple to-cyber-pink',  icon: 'fas fa-cloud-sun'     },
+            { title: 'Даалгавар удирдах систем',       desc: '“Өдөр тутмын даалгавар болон төслүүдийг удирдах бүтээмжийн аппликейшн',       link: '#', tags: ['HTML','CSS','JavaScript'], color: 'from-cyber-pink to-cyber-blue',    icon: 'fas fa-tasks'         },
+            { title: '“Кино мэдээллийн сан',     desc: '“Дэлгэрэнгүй мэдээлэлтэй кино хайх болон судлах аппликейшн',          link: '#', tags: ['HTML','API'],              color: 'from-cyber-green to-cyber-blue',   icon: 'fas fa-film'          },
+            { title: '“Тооцоолуур апп',     desc: 'Гоёмсог дизайнтай, дэвшилтэт математик функцүүдтэй тооны машин',   link: '#', tags: ['HTML','CSS','JavaScript'], color: 'from-cyber-red to-cyber-purple',   icon: 'fas fa-calculator'    },
+            { title: 'Ой тогтоолтын тоглоом',        desc: 'Анимейшнтэй, интерактив ой тогтоолтын хослуулах тоглоом.',            link: '#', tags: ['HTML','CSS','JavaScript'], color: 'from-cyber-blue to-cyber-pink',    icon: 'fas fa-gamepad'       }
         ]));
     }
     if (!localStorage.getItem(STORAGE_CONTACT)) {
