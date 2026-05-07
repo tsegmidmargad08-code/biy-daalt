@@ -20,7 +20,7 @@ function seedDefaults() {
         localStorage.setItem(STORAGE_PROFILE, JSON.stringify({
             name:   'ODBAYAR',
             uni:    'Ikh Zasag International University',
-            reg:    'ВК05310111',
+            reg:    '1234567890',
             code:   'ЕУ23В075',
             email:  'odbayar@ikhzasag.edu.mn',
             phone:  '70157768',
